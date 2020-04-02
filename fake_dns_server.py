@@ -26,8 +26,12 @@ def handle_packet_fn(iface, spoof_ip, spoof_domains):
             else:
                 print("Forwarding DNS request for %s by %s" %
                         (queried_host, ip.src))
-                a_records = dns.resolver.query(queried_host, 'A')
-                resolved_ip = a_records[0].address
+                try:
+                    a_records = dns.resolver.query(queried_host, 'A')
+                    resolved_ip = a_records[0].address
+                except:
+                    print("Domain name %s not resolved." % (queried_host))
+                    return
 
             # Build the DNS answer
             dns_answer = scapy.DNSRR(
